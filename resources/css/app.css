@@ -1,0 +1,303 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../views/**/*.blade.php';
+@source '../js/**/*.js';
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Fraunces', 'Georgia', ui-serif, serif;
+
+    /* Palet Warna Utama Lentera Pustaka */
+    --color-forest: #183B32;
+    --color-forest-hover: #214E42;
+    --color-forest-dark: #112A23;
+    --color-forest-soft: #E4EDE9;
+
+    --color-gold: #D9A441;
+    --color-gold-hover: #C49030;
+    --color-gold-soft: #F9F1DF;
+
+    --color-ivory: #F7F3E8;
+    --color-ivory-dark: #EDE7D7;
+    --color-ivory-paper: #FCFBF7;
+
+    --color-sage: #6B7C70;
+    --color-sage-light: #94A398;
+    --color-sage-muted: #DCE2DD;
+
+    --color-charcoal: #292D2A;
+    --color-charcoal-light: #454B46;
+
+    /* Warna Status Lembut & Serasi */
+    --color-status-diajukan: #F4EBD3;
+    --color-status-diajukan-text: #8B651B;
+
+    --color-status-disetujui: #E0ECE7;
+    --color-status-disetujui-text: #183B32;
+
+    --color-status-dipinjam: #E3EAEF;
+    --color-status-dipinjam-text: #2A4B63;
+
+    --color-status-kembali: #EAE4F0;
+    --color-status-kembali-text: #4D3869;
+
+    --color-status-selesai: #E4EBE5;
+    --color-status-selesai-text: #295238;
+
+    --color-status-ditolak: #F3E3E1;
+    --color-status-ditolak-text: #87332A;
+
+    --color-status-dibatalkan: #EAEAE7;
+    --color-status-dibatalkan-text: #5A605C;
+
+    /* Border Radius Token */
+    --radius-card: 15px;
+}
+
+@layer base {
+    body {
+        background-color: var(--color-ivory);
+        color: var(--color-charcoal);
+        font-family: var(--font-sans);
+        -webkit-font-smoothing: antialiased;
+    }
+}
+
+/* Custom SweetAlert2 Theme Overrides Sesuai Palet Lentera Pustaka */
+.swal2-container {
+    padding: 1rem !important;
+    z-index: 99999 !important;
+}
+
+.swal2-container.swal2-backdrop-show {
+    background: rgba(24, 59, 50, 0.45) !important;
+    backdrop-filter: blur(5px) !important;
+    -webkit-backdrop-filter: blur(5px) !important;
+}
+
+@keyframes lenteraModalIn {
+    0% {
+        opacity: 0;
+        transform: scale(0.92) translateY(6px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0);
+    }
+}
+
+@keyframes lenteraModalOut {
+    0% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+}
+
+.lentera-swal-popup {
+    background-color: #FCFBF7 !important;
+    color: #292D2A !important;
+    border-radius: 18px !important;
+    border: 1px solid rgba(107, 124, 112, 0.2) !important;
+    padding: 2rem 1.85rem 1.75rem !important;
+    box-shadow: 0 24px 50px -12px rgba(24, 59, 50, 0.28), 0 4px 14px rgba(0, 0, 0, 0.04) !important;
+    font-family: var(--font-sans) !important;
+    width: 92% !important;
+    max-width: 26rem !important;
+    box-sizing: border-box !important;
+    animation: lenteraModalIn 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+}
+
+.lentera-swal-popup.swal2-hide {
+    animation: lenteraModalOut 0.15s ease-in forwards !important;
+}
+
+.lentera-swal-popup-wide {
+    max-width: 32rem !important;
+}
+
+/* Custom icon styling */
+.swal2-icon {
+    font-size: 0.85rem !important;
+    margin: 0.5rem auto 1.25rem !important;
+}
+
+.swal2-icon.swal2-success {
+    border-color: #183B32 !important;
+    color: #183B32 !important;
+}
+
+.swal2-icon.swal2-success [class^='swal2-success-line'] {
+    background-color: #183B32 !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-ring {
+    border-color: rgba(24, 59, 50, 0.25) !important;
+}
+
+.swal2-icon.swal2-success .swal2-success-circular-line-left,
+.swal2-icon.swal2-success .swal2-success-circular-line-right,
+.swal2-icon.swal2-success .swal2-success-fix {
+    background-color: #FCFBF7 !important;
+}
+
+.swal2-icon.swal2-error {
+    border-color: #87332A !important;
+    color: #87332A !important;
+}
+
+.swal2-icon.swal2-error [class^='swal2-x-mark-line'] {
+    background-color: #87332A !important;
+}
+
+.swal2-icon.swal2-warning {
+    border-color: #D9A441 !important;
+    color: #D9A441 !important;
+}
+
+.swal2-icon.swal2-question {
+    border-color: #D9A441 !important;
+    color: #D9A441 !important;
+}
+
+.swal2-icon.swal2-info {
+    border-color: #6B7C70 !important;
+    color: #6B7C70 !important;
+}
+
+.lentera-swal-title {
+    color: #183B32 !important;
+    font-size: 1.2rem !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.015em !important;
+    padding: 0 !important;
+    margin: 0 0 0.45rem 0 !important;
+    line-height: 1.35 !important;
+    font-family: var(--font-sans) !important;
+}
+
+.lentera-swal-html {
+    color: #555D57 !important;
+    font-size: 0.875rem !important;
+    line-height: 1.55 !important;
+    margin: 0 !important;
+    padding: 0 0.25rem !important;
+    font-family: var(--font-sans) !important;
+}
+
+.lentera-swal-actions {
+    margin-top: 1.35rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+}
+
+.lentera-swal-confirm,
+.lentera-swal-cancel {
+    height: 42px !important;
+    line-height: 42px !important;
+    padding: 0 1.5rem !important;
+    border-radius: 12px !important;
+    font-size: 0.875rem !important;
+    font-weight: 600 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    box-sizing: border-box !important;
+    transition: all 180ms ease !important;
+    cursor: pointer !important;
+    white-space: nowrap !important;
+}
+
+.lentera-swal-confirm {
+    background-color: #183B32 !important;
+    color: #F7F3E8 !important;
+    border: 1px solid #183B32 !important;
+    min-width: 7.5rem !important;
+    box-shadow: 0 2px 6px rgba(24, 59, 50, 0.18) !important;
+}
+
+.lentera-swal-confirm:hover {
+    background-color: #214E42 !important;
+    border-color: #214E42 !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(24, 59, 50, 0.24) !important;
+}
+
+.lentera-swal-cancel {
+    background-color: #EDE7D7 !important;
+    color: #292D2A !important;
+    border: 1px solid rgba(107, 124, 112, 0.3) !important;
+    min-width: 5.5rem !important;
+}
+
+.lentera-swal-cancel:hover {
+    background-color: #E2DBD0 !important;
+    color: #183B32 !important;
+    border-color: #6B7C70 !important;
+}
+
+/* Pastikan tombol yang disembunyikan SweetAlert2 tidak pernah tampil */
+.swal2-actions button[style*="display: none"],
+.swal2-cancel[style*="display: none"],
+.swal2-confirm[style*="display: none"],
+.swal2-deny[style*="display: none"] {
+    display: none !important;
+}
+
+.swal2-textarea,
+.lentera-swal-input,
+#swal-catatan-petugas {
+    background-color: #FFFFFF !important;
+    color: #292D2A !important;
+    border: 1px solid rgba(107, 124, 112, 0.35) !important;
+    border-radius: 12px !important;
+    font-size: 0.875rem !important;
+    line-height: 1.55 !important;
+    padding: 0.75rem 1rem !important;
+    margin: 1.15rem auto 0.25rem auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    font-family: var(--font-sans) !important;
+    resize: none !important;
+    height: 92px !important;
+    transition: border-color 150ms ease, box-shadow 150ms ease !important;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04) inset !important;
+}
+
+.swal2-textarea::placeholder,
+.lentera-swal-input::placeholder {
+    color: #94A398 !important;
+    font-size: 0.85rem !important;
+    font-family: var(--font-sans) !important;
+}
+
+.swal2-textarea:focus,
+.lentera-swal-input:focus {
+    border-color: #183B32 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 3px rgba(24, 59, 50, 0.12) !important;
+}
+
+.swal2-validation-message,
+.lentera-swal-validation {
+    color: #87332A !important;
+    background-color: #F3E3E1 !important;
+    border: 1px solid rgba(135, 51, 42, 0.2) !important;
+    border-radius: 10px !important;
+    padding: 0.5rem 0.85rem !important;
+    font-size: 0.785rem !important;
+    font-weight: 500 !important;
+    margin: 0.75rem auto 0 auto !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    text-align: center !important;
+}
