@@ -14,54 +14,17 @@
                 </div>
             </a>
 
-            {{-- Menu Desktop --}}
+            {{-- Menu Desktop Landing Page --}}
             <nav class="hidden md:flex items-center gap-1">
+                <a href="{{ route('beranda') }}" class="px-3.5 py-2 rounded-card text-sm font-medium transition-colors {{ request()->routeIs('beranda') ? 'bg-ivory/15 text-gold' : 'text-ivory/85 hover:text-ivory hover:bg-ivory/10' }}">
+                    Beranda
+                </a>
+                <a href="{{ auth()->check() && auth()->user()->isPeminjam() ? route('member.katalog') : route('publik.katalog') }}" class="px-3.5 py-2 rounded-card text-sm font-medium transition-colors {{ request()->routeIs('publik.katalog*') || request()->routeIs('publik.buku*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85 hover:text-ivory hover:bg-ivory/10' }}">
+                    Katalog Koleksi
+                </a>
                 @auth
-                    @if (auth()->user()->isPeminjam())
-                        @php
-                            $unreadChatCount = \App\Models\Percakapan::where('user_id', auth()->id())
-                                ->where('tipe', 'petugas')
-                                ->withCount(['pesan as unread' => fn ($q) => $q->where('pengirim', 'staf')->where('dibaca', false)])
-                                ->get()
-                                ->sum('unread');
-                        @endphp
-                        <a href="{{ route('member.dashboard') }}" class="px-3.5 py-2 rounded-card text-sm font-medium transition-colors {{ request()->routeIs('member.dashboard') ? 'bg-ivory/15 text-gold' : 'text-ivory/85 hover:text-ivory hover:bg-ivory/10' }}">
-                            Dashboard
-                        </a>
-                        <a href="{{ route('member.katalog') }}" class="px-3.5 py-2 rounded-card text-sm font-medium transition-colors {{ request()->routeIs('member.katalog*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85 hover:text-ivory hover:bg-ivory/10' }}">
-                            Katalog Buku
-                        </a>
-                        <a href="{{ route('member.peminjaman.index') }}" class="px-3.5 py-2 rounded-card text-sm font-medium transition-colors {{ request()->routeIs('member.peminjaman*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85 hover:text-ivory hover:bg-ivory/10' }}">
-                            Peminjaman Saya
-                        </a>
-                        <a href="{{ route('member.koleksi.index') }}" class="px-3.5 py-2 rounded-card text-sm font-medium transition-colors {{ request()->routeIs('member.koleksi*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85 hover:text-ivory hover:bg-ivory/10' }}">
-                            Koleksi Pribadi
-                        </a>
-                        <a href="{{ route('member.denda.index') }}" class="px-3.5 py-2 rounded-card text-sm font-medium transition-colors {{ request()->routeIs('member.denda*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85 hover:text-ivory hover:bg-ivory/10' }}">
-                            Poin Denda
-                            @if (auth()->user()->total_poin_denda > 0)
-                                <span class="ml-1 px-1.5 py-0.5 text-[10px] rounded-card bg-gold text-charcoal font-bold">{{ auth()->user()->total_poin_denda }}</span>
-                            @endif
-                        </a>
-                        <a href="{{ route('member.chat') }}" class="px-3.5 py-2 rounded-card text-sm font-medium transition-colors {{ request()->routeIs('member.chat*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85 hover:text-ivory hover:bg-ivory/10' }}">
-                            Bantuan & Chat
-                            @if ($unreadChatCount > 0)
-                                <span class="ml-1 px-1.5 py-0.5 text-[10px] rounded-card bg-gold text-charcoal font-bold">{{ $unreadChatCount }}</span>
-                            @endif
-                        </a>
-                    @else
-                        <a href="{{ route('beranda') }}" class="px-3.5 py-2 rounded-card text-sm font-medium text-ivory/85 hover:text-ivory">Beranda</a>
-                        <a href="{{ route('publik.katalog') }}" class="px-3.5 py-2 rounded-card text-sm font-medium text-ivory/85 hover:text-ivory">Katalog</a>
-                        <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('petugas.dashboard') }}" class="px-4 py-2 rounded-card text-sm font-semibold bg-gold text-charcoal hover:bg-gold-hover">
-                            Panel {{ ucfirst(auth()->user()->role) }}
-                        </a>
-                    @endif
-                @else
-                    <a href="{{ route('beranda') }}" class="px-3.5 py-2 rounded-card text-sm font-medium transition-colors {{ request()->routeIs('beranda') ? 'bg-ivory/15 text-gold' : 'text-ivory/85 hover:text-ivory hover:bg-ivory/10' }}">
-                        Beranda
-                    </a>
-                    <a href="{{ route('publik.katalog') }}" class="px-3.5 py-2 rounded-card text-sm font-medium transition-colors {{ request()->routeIs('publik.katalog*') || request()->routeIs('publik.buku*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85 hover:text-ivory hover:bg-ivory/10' }}">
-                        Katalog Koleksi
+                    <a href="{{ auth()->user()->isPeminjam() ? route('member.dashboard') : (auth()->user()->isAdmin() ? route('admin.dashboard') : route('petugas.dashboard')) }}" class="px-3.5 py-2 rounded-card text-sm font-medium text-ivory/85 hover:text-ivory hover:bg-ivory/10 transition-colors">
+                        Dashboard {{ auth()->user()->isPeminjam() ? 'Anggota' : ucfirst(auth()->user()->role) }}
                     </a>
                 @endauth
             </nav>
@@ -69,9 +32,8 @@
             {{-- Kanan: Profil / Tombol Auth --}}
             <div class="hidden md:flex items-center gap-3">
                 @auth
-                    <a href="{{ auth()->user()->isPeminjam() ? route('member.profil') : (auth()->user()->isAdmin() ? route('admin.dashboard') : route('petugas.dashboard')) }}" class="text-xs text-ivory/85 hover:text-gold transition-colors">
-                        <span class="font-semibold block text-right">{{ auth()->user()->nama_lengkap }}</span>
-                        <span class="text-ivory/60 block text-right">{{ ucfirst(auth()->user()->role) }}</span>
+                    <a href="{{ auth()->user()->isPeminjam() ? route('member.dashboard') : (auth()->user()->isAdmin() ? route('admin.dashboard') : route('petugas.dashboard')) }}" class="px-4 py-2 rounded-card text-xs font-semibold bg-gold text-charcoal hover:bg-gold-hover transition-colors">
+                        Buka Panel ({{ auth()->user()->nama_lengkap }})
                     </a>
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
@@ -102,29 +64,21 @@
         </div>
     </div>
 
-    {{-- Menu Mobile --}}
+    {{-- Menu Mobile Landing Page --}}
     <div x-show="mobileOpen" x-transition class="md:hidden border-t border-ivory/15 bg-forest-dark px-4 pt-3 pb-5 space-y-1.5">
+        <a href="{{ route('beranda') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium {{ request()->routeIs('beranda') ? 'bg-ivory/15 text-gold' : 'text-ivory/85' }}">Beranda</a>
+        <a href="{{ auth()->check() && auth()->user()->isPeminjam() ? route('member.katalog') : route('publik.katalog') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium text-ivory/85">Katalog Koleksi</a>
         @auth
-            @if (auth()->user()->isPeminjam())
-                <a href="{{ route('member.dashboard') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium {{ request()->routeIs('member.dashboard') ? 'bg-ivory/15 text-gold' : 'text-ivory/85' }}">Dashboard</a>
-                <a href="{{ route('member.katalog') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium {{ request()->routeIs('member.katalog*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85' }}">Katalog Buku</a>
-                <a href="{{ route('member.peminjaman.index') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium {{ request()->routeIs('member.peminjaman*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85' }}">Peminjaman Saya</a>
-                <a href="{{ route('member.koleksi.index') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium {{ request()->routeIs('member.koleksi*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85' }}">Koleksi Pribadi</a>
-                <a href="{{ route('member.denda.index') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium {{ request()->routeIs('member.denda*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85' }}">Poin Denda ({{ auth()->user()->total_poin_denda }})</a>
-                <a href="{{ route('member.chat') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium {{ request()->routeIs('member.chat*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85' }}">Bantuan & Chat</a>
-                <a href="{{ route('member.profil') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium {{ request()->routeIs('member.profil*') ? 'bg-ivory/15 text-gold' : 'text-ivory/85' }}">Profil Saya</a>
-            @else
-                <a href="{{ auth()->user()->isAdmin() ? route('admin.dashboard') : route('petugas.dashboard') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-semibold text-gold">Dashboard Staf</a>
-            @endif
+            <a href="{{ auth()->user()->isPeminjam() ? route('member.dashboard') : (auth()->user()->isAdmin() ? route('admin.dashboard') : route('petugas.dashboard')) }}" class="block px-3.5 py-2.5 rounded-card text-sm font-semibold text-gold">
+                Buka Panel ({{ auth()->user()->nama_lengkap }})
+            </a>
             <form action="{{ route('logout') }}" method="POST" class="pt-2 border-t border-ivory/10">
                 @csrf
                 <button type="submit" class="w-full text-left px-3.5 py-2.5 rounded-card text-sm font-medium text-ivory/80 hover:bg-ivory/10">
-                    Keluar ({{ auth()->user()->nama_lengkap }})
+                    Keluar
                 </button>
             </form>
         @else
-            <a href="{{ route('beranda') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium text-ivory/85">Beranda</a>
-            <a href="{{ route('publik.katalog') }}" class="block px-3.5 py-2.5 rounded-card text-sm font-medium text-ivory/85">Katalog Koleksi</a>
             <div class="pt-3 flex gap-2">
                 <a href="{{ route('login') }}" class="flex-1 text-center py-2.5 rounded-card text-sm font-medium border border-ivory/25 text-ivory">Masuk</a>
                 <a href="{{ route('register') }}" class="flex-1 text-center py-2.5 rounded-card text-sm font-semibold bg-gold text-charcoal">Daftar</a>
@@ -132,4 +86,3 @@
         @endauth
     </div>
 </header>
-

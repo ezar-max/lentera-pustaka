@@ -12,8 +12,20 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body x-data="{ sidebarOpen: false }" class="min-h-screen bg-ivory text-charcoal antialiased selection:bg-forest selection:text-ivory">
-    {{-- Data Flash untuk ditampilkan oleh Popup JS / Toast JS --}}
+<body x-data="{
+          desktopOpen: localStorage.getItem('lentera_sidebar') !== 'closed',
+          mobileOpen: false,
+          toggleSidebar() {
+              if (window.innerWidth >= 1024) {
+                  this.desktopOpen = !this.desktopOpen;
+                  localStorage.setItem('lentera_sidebar', this.desktopOpen ? 'open' : 'closed');
+              } else {
+                  this.mobileOpen = !this.mobileOpen;
+              }
+          }
+      }"
+      class="min-h-screen bg-ivory text-charcoal antialiased selection:bg-forest selection:text-ivory">
+    {{-- Data Flash untuk ditampilkan oleh Popup JS --}}
     <div id="lentera-flash-data"
          class="hidden"
          data-success="{{ session('success') }}"
@@ -23,25 +35,51 @@
     </div>
 
     <div class="flex min-h-screen">
-        {{-- Sidebar Desktop --}}
-        <div class="hidden lg:block">
-            <x-sidebar />
+        {{-- Sidebar Desktop (Collapsible Smooth) --}}
+        <div class="hidden lg:block shrink-0 sticky top-0 h-screen overflow-hidden transition-[width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+             :class="desktopOpen ? 'w-64' : 'w-0'">
+            <div class="w-64 h-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+                 :class="desktopOpen ? 'translate-x-0 opacity-100' : '-translate-x-8 opacity-0'">
+                <x-sidebar />
+            </div>
         </div>
 
-        {{-- Drawer Sidebar Mobile --}}
-        <div x-show="sidebarOpen" x-transition.opacity class="fixed inset-0 z-40 bg-charcoal/50 lg:hidden" @click="sidebarOpen = false"></div>
-        <div x-show="sidebarOpen" x-transition class="fixed inset-y-0 left-0 z-50 w-64 lg:hidden">
+        {{-- Drawer Sidebar Mobile (Slide Smooth) --}}
+        <div x-cloak
+             x-show="mobileOpen"
+             x-transition:enter="transition-opacity duration-300 ease-out"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition-opacity duration-200 ease-in"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0"
+             class="fixed inset-0 z-40 bg-charcoal/50 backdrop-blur-xs lg:hidden"
+             @click="mobileOpen = false">
+        </div>
+        <div x-cloak
+             x-show="mobileOpen"
+             x-transition:enter="transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+             x-transition:enter-start="-translate-x-full"
+             x-transition:enter-end="translate-x-0"
+             x-transition:leave="transition-transform duration-250 ease-in"
+             x-transition:leave-start="translate-x-0"
+             x-transition:leave-end="-translate-x-full"
+             class="fixed inset-y-0 left-0 z-50 w-64 lg:hidden">
             <x-sidebar />
         </div>
 
         {{-- Area Konten Utama --}}
-        <div class="flex-1 flex flex-col min-w-0">
-            {{-- Header Bar Mobile & Judul Halaman --}}
-            <header class="bg-ivory-paper border-b border-sage/20 px-4 sm:px-8 py-4 flex items-center justify-between sticky top-0 z-20">
-                <div class="flex items-center gap-3">
-                    <button @click="sidebarOpen = true" type="button" class="lg:hidden p-2 rounded-card border border-sage/30 text-charcoal hover:bg-ivory-dark">
-                        <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="M4 6h16M4 12h16M4 18h16" />
+        <div class="flex-1 flex flex-col min-w-0 transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]">
+            {{-- Header Bar & Judul Halaman --}}
+            <header class="bg-ivory-paper/95 backdrop-blur-xs border-b border-sage/20 px-4 sm:px-8 py-4 flex items-center justify-between sticky top-0 z-20">
+                <div class="flex items-center gap-3.5">
+                    <button @click="toggleSidebar()"
+                            type="button"
+                            title="Buka / Tutup Sidebar"
+                            class="p-2 rounded-card border border-sage/25 bg-ivory text-forest hover:bg-forest hover:text-ivory hover:border-forest transition-all duration-200 cursor-pointer shrink-0">
+                        <span class="sr-only">Buka atau tutup menu sidebar</span>
+                        <svg class="w-5 h-5 transition-transform duration-300" :class="!desktopOpen ? 'lg:rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" />
                         </svg>
                     </button>
                     <div>
@@ -76,4 +114,3 @@
     @stack('scripts')
 </body>
 </html>
-
