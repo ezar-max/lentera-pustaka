@@ -37,8 +37,8 @@
     <div class="flex min-h-screen">
         {{-- Sidebar Desktop (Collapsible Smooth) --}}
         <div class="hidden lg:block shrink-0 sticky top-0 h-screen overflow-hidden transition-[width] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
-             :class="desktopOpen ? 'w-64' : 'w-0'">
-            <div class="w-64 h-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
+             :class="desktopOpen ? 'w-72' : 'w-0'">
+            <div class="w-72 h-full transition-all duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]"
                  :class="desktopOpen ? 'translate-x-0 opacity-100' : '-translate-x-8 opacity-0'">
                 <x-sidebar />
             </div>
@@ -64,7 +64,7 @@
              x-transition:leave="transition-transform duration-250 ease-in"
              x-transition:leave-start="translate-x-0"
              x-transition:leave-end="-translate-x-full"
-             class="fixed inset-y-0 left-0 z-50 w-64 lg:hidden">
+             class="fixed inset-y-0 left-0 z-50 w-72 lg:hidden">
             <x-sidebar />
         </div>
 

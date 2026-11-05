@@ -13,18 +13,18 @@
     }
 @endphp
 
-<aside class="w-64 bg-forest text-ivory shrink-0 flex flex-col h-full select-none border-r border-ivory/10 shadow-xl lg:shadow-none">
+<aside class="w-72 bg-forest text-ivory shrink-0 flex flex-col h-full select-none border-r border-ivory/10 shadow-xl lg:shadow-none">
     {{-- Header & Logo (Tetap di atas saat di-scroll, proporsional dan tidak terpotong) --}}
     <div class="px-4 py-3.5 border-b border-ivory/15 shrink-0 bg-forest flex items-center justify-between gap-2.5 z-10">
-        <a href="{{ $headerRoute }}" class="flex items-center gap-2.5 min-w-0">
+        <a href="{{ $headerRoute }}" class="flex items-center gap-2.5 flex-1 min-w-0">
             <div class="w-8 h-8 rounded-card bg-gold/15 border border-gold/40 flex items-center justify-center text-gold shrink-0">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" />
                 </svg>
             </div>
-            <div class="min-w-0">
-                <span class="font-sans text-sm font-semibold tracking-tight text-ivory block leading-tight truncate">Lentera Pustaka</span>
-                <span class="text-[10px] font-medium text-gold tracking-wide uppercase block mt-0.5 truncate">
+            <div class="min-w-0 flex-1">
+                <span class="font-sans text-sm font-semibold tracking-tight text-ivory block leading-tight whitespace-nowrap">Lentera Pustaka</span>
+                <span class="text-[10px] font-semibold text-gold tracking-wider uppercase block mt-0.5 whitespace-nowrap">
                     {{ $headerSubtitle }}
                 </span>
             </div>
@@ -178,12 +178,6 @@
                             'active' => request()->routeIs('member.koleksi*'),
                             'badge' => 0,
                         ],
-                        [
-                            'label' => 'Bantuan & Chat',
-                            'route' => 'member.chat',
-                            'active' => request()->routeIs('member.chat*'),
-                            'badge' => $unreadChatCount,
-                        ],
                     ];
                 @endphp
 
@@ -203,6 +197,32 @@
                             </a>
                         @endforeach
                     </nav>
+
+                    {{-- Tombol Akses Minimalis Popup Chat (Windows Style Draggable) --}}
+                    <div class="mt-2.5 pt-2 border-t border-ivory/10">
+                        <button type="button"
+                                @click="$dispatch('open-lentera-chat')"
+                                class="w-full flex items-center justify-between px-3 py-2 rounded-card text-[13px] font-medium bg-ivory/10 hover:bg-ivory/20 text-ivory hover:text-gold transition-all duration-200 ease-out group cursor-pointer border border-ivory/15 shadow-xs">
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="w-5 h-5 rounded-card bg-gold/20 text-gold flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform">
+                                    <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+                                    </svg>
+                                </span>
+                                <span class="font-medium truncate">Bantuan & Chat</span>
+                            </div>
+                            <div class="flex items-center gap-1.5 shrink-0">
+                                @if ($unreadChatCount > 0)
+                                    <span class="px-1.5 py-0.5 text-[10px] font-bold rounded-card bg-gold text-charcoal">
+                                        {{ $unreadChatCount }}
+                                    </span>
+                                @else
+                                    <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                                @endif
+                                <span class="text-[9px] text-ivory/60 group-hover:text-gold uppercase tracking-wider font-semibold">POPUP</span>
+                            </div>
+                        </button>
+                    </div>
                 </div>
 
                 {{-- Pengaturan Akun Anggota --}}

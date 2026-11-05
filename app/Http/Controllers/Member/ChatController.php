@@ -49,6 +49,59 @@ class ChatController extends Controller
         return view('member.chat', compact('tab', 'percakapanAi', 'percakapanPetugas', 'belumDibacaPetugas'));
     }
 
+    public function data(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $percakapanAi = Percakapan::firstOrCreate([
+            'user_id' => $user->id,
+            'tipe' => 'ai',
+            'status' => 'aktif',
+        ]);
+
+        $percakapanPetugas = Percakapan::with(['staf', 'pesan'])
+            ->where('user_id', $user->id)
+            ->where('tipe', 'petugas')
+            ->latest('id')
+            ->first();
+
+        $pesanAi = $percakapanAi->pesan()
+            ->orderBy('id')
+            ->get()
+            ->map(fn (Pesan $p) => [
+                'id' => $p->id,
+                'pengirim' => $p->pengirim,
+                'isi' => app(ChatbotService::class)->bersihkanFormatText($p->isi),
+                'waktu' => $p->created_at?->format('H:i'),
+            ]);
+
+        $pesanPetugas = $percakapanPetugas
+            ? $percakapanPetugas->pesan()
+                ->orderBy('id')
+                ->get()
+                ->map(fn (Pesan $p) => [
+                    'id' => $p->id,
+                    'pengirim' => $p->pengirim,
+                    'isi' => $p->isi,
+                    'waktu' => $p->created_at?->format('H:i'),
+                ])
+            : [];
+
+        return response()->json([
+            'status' => 'ok',
+            'ai' => [
+                'id' => $percakapanAi->id,
+                'pesan' => $pesanAi,
+            ],
+            'petugas' => [
+                'exists' => $percakapanPetugas !== null,
+                'status' => $percakapanPetugas?->status ?? null,
+                'nama_staf' => $percakapanPetugas?->staf?->nama_lengkap ?? 'Petugas Perpustakaan',
+                'pesan' => $pesanPetugas,
+            ],
+        ]);
+    }
+
     public function kirimAi(Request $request): JsonResponse|RedirectResponse
     {
         $validated = $request->validate([
@@ -74,7 +127,7 @@ class ChatController extends Controller
         return redirect()->route('member.chat', ['tab' => 'ai']);
     }
 
-    public function hubungiPetugas(Request $request): RedirectResponse
+    public function hubungiPetugas(Request $request): JsonResponse|RedirectResponse
     {
         $user = $request->user();
 
@@ -93,6 +146,20 @@ class ChatController extends Controller
                 'pengirim_id' => $user->id,
                 'isi' => 'Halo Petugas Lentera Pustaka, saya membutuhkan bantuan terkait layanan perpustakaan.',
                 'dibaca' => false,
+            ]);
+        }
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'status' => 'ok',
+                'nama_staf' => $percakapan->staf?->nama_lengkap ?? 'Petugas Perpustakaan',
+                'status_percakapan' => $percakapan->status,
+                'pesan' => $percakapan->pesan()->orderBy('id')->get()->map(fn ($p) => [
+                    'id' => $p->id,
+                    'pengirim' => $p->pengirim,
+                    'isi' => $p->isi,
+                    'waktu' => $p->created_at?->format('H:i'),
+                ]),
             ]);
         }
 
@@ -170,7 +237,7 @@ class ChatController extends Controller
             ->map(fn (Pesan $p) => [
                 'id' => $p->id,
                 'pengirim' => $p->pengirim,
-                'isi' => $p->isi,
+                'isi' => app(ChatbotService::class)->bersihkanFormatText($p->isi),
                 'waktu' => $p->created_at?->format('H:i'),
             ]);
 

@@ -68,6 +68,7 @@ Route::prefix('member')
 
         // Chat AI & Petugas
         Route::get('/chat', [MemberChatController::class, 'index'])->name('chat');
+        Route::get('/chat/data', [MemberChatController::class, 'data'])->name('chat.data');
         Route::post('/chat/ai', [MemberChatController::class, 'kirimAi'])->name('chat.ai');
         Route::post('/chat/hubungi-petugas', [MemberChatController::class, 'hubungiPetugas'])->name('chat.hubungi-petugas');
         Route::post('/chat/petugas', [MemberChatController::class, 'kirimPetugas'])->name('chat.petugas');
