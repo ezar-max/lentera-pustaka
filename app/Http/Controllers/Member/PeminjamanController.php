@@ -18,7 +18,7 @@ class PeminjamanController extends Controller
 
     public function index(Request $request): View
     {
-        $query = Peminjaman::with(['buku.kategori', 'petugas', 'denda'])
+        $query = Peminjaman::with(['buku.kategori', 'petugas'])
             ->where('user_id', $request->user()->id)
             ->latest('id');
 
@@ -35,7 +35,7 @@ class PeminjamanController extends Controller
     {
         Gate::authorize('view', $peminjaman);
 
-        $peminjaman->load(['buku.kategori', 'petugas', 'denda']);
+        $peminjaman->load(['buku.kategori', 'petugas']);
 
         return view('member.detail-peminjaman', compact('peminjaman'));
     }

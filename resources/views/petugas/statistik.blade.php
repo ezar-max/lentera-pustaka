@@ -1,4 +1,4 @@
-<x-layouts.dashboard title="Statistik Grafik" header="Visualisasi Statistik Sirkulasi & Pustaka" subheader="Analisis tren peminjaman bulanan, buku terpopuler, distribusi kategori, komposisi status, dan poin denda.">
+<x-layouts.dashboard title="Statistik Grafik" header="Visualisasi Statistik Sirkulasi & Pustaka" subheader="Analisis tren peminjaman bulanan, buku terpopuler, distribusi kategori, komposisi status, dan pengembalian buku.">
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {{-- 1. Peminjaman per Bulan (Garis) --}}
         <div class="bg-ivory-paper border border-sage/25 rounded-card p-6">
@@ -32,9 +32,9 @@
             </div>
         </div>
 
-        {{-- 5. Total Poin Denda per Bulan (Batang) --}}
+        {{-- 5. Pengembalian Buku per Bulan (Batang) --}}
         <div class="bg-ivory-paper border border-sage/25 rounded-card p-6 {{ auth()->user()->isAdmin() ? '' : 'lg:col-span-2' }}">
-            <h2 class="text-sm font-semibold text-forest mb-4">5. Total Poin Denda per Bulan</h2>
+            <h2 class="text-sm font-semibold text-forest mb-4">5. Buku Dikembalikan per Bulan</h2>
             <div class="h-72">
                 <canvas id="statDendaBulan"></canvas>
             </div>
@@ -123,14 +123,14 @@
                     options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'right' } } }
                 });
 
-                // 5. Batang: Poin Denda per Bulan
+                // 5. Batang: Pengembalian per Bulan
                 new window.Chart(document.getElementById('statDendaBulan'), {
                     type: 'bar',
                     data: {
-                        labels: stats.denda_per_bulan.labels,
+                        labels: stats.pengembalian_per_bulan.labels,
                         datasets: [{
-                            label: 'Total Poin Denda',
-                            data: stats.denda_per_bulan.data,
+                            label: 'Buku Dikembalikan',
+                            data: stats.pengembalian_per_bulan.data,
                             backgroundColor: '#D9A441',
                             borderRadius: 8,
                         }]

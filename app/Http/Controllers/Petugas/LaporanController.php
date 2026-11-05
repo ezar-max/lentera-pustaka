@@ -29,7 +29,6 @@ class LaporanController extends Controller
             'petugas_id',
             'kategori_id',
             'stok_menipis',
-            'status_denda',
             'status_akun',
         ]);
 
@@ -54,7 +53,6 @@ class LaporanController extends Controller
             'petugas_id',
             'kategori_id',
             'stok_menipis',
-            'status_denda',
             'status_akun',
         ]);
 
@@ -62,7 +60,6 @@ class LaporanController extends Controller
 
         $judulLaporan = match ($jenis) {
             'stok' => 'Laporan Stok & Koleksi Buku',
-            'denda' => 'Laporan Poin Denda Anggota',
             'member' => 'Laporan Keanggotaan Perpustakaan',
             default => 'Laporan Sirkulasi Peminjaman & Pengembalian',
         };

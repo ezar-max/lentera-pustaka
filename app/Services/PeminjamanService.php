@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class PeminjamanService
 {
-    public function __construct(public DendaService $dendaService) {}
-
     /**
      * Mengecek apakah user memenuhi seluruh aturan untuk meminjam buku tertentu.
      *
@@ -24,14 +22,6 @@ class PeminjamanService
             return [
                 'bisa' => false,
                 'alasan' => 'Akun Anda belum aktif.',
-            ];
-        }
-
-        $batasPoin = (int) config('perpustakaan.batas_poin_blokir', 50);
-        if ($user->total_poin_denda >= $batasPoin) {
-            return [
-                'bisa' => false,
-                'alasan' => "Poin denda aktif Anda ({$user->total_poin_denda} poin) telah mencapai batas blokir ({$batasPoin} poin). Silakan selesaikan di meja petugas.",
             ];
         }
 
@@ -288,8 +278,6 @@ class PeminjamanService
                     'stok_total' => max(0, $buku->stok_total - 1),
                 ]);
             }
-
-            $this->dendaService->prosesDendaPengembalian($pinjam);
 
             return $pinjam->fresh();
         });

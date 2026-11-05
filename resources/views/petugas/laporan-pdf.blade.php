@@ -80,33 +80,6 @@
                 @endforeach
             </tbody>
         </table>
-    @elseif ($jenis === 'denda')
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Tanggal</th>
-                    <th>Nama Anggota</th>
-                    <th>Jenis Denda</th>
-                    <th>Besar Poin</th>
-                    <th>Keterangan</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($data as $i => $row)
-                    <tr>
-                        <td>{{ $i + 1 }}</td>
-                        <td>{{ $row->created_at?->format('d/m/Y') }}</td>
-                        <td>{{ $row->user->nama_lengkap }}</td>
-                        <td>{{ ucfirst($row->jenis) }}</td>
-                        <td>{{ $row->poin }} Poin</td>
-                        <td>{{ $row->keterangan }}</td>
-                        <td>{{ strtoupper($row->status) }}</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
     @elseif ($jenis === 'member')
         <table>
             <thead>
@@ -117,7 +90,6 @@
                     <th>Email</th>
                     <th>Status Akun</th>
                     <th>Tanggal Daftar</th>
-                    <th>Total Poin Denda</th>
                 </tr>
             </thead>
             <tbody>
@@ -129,7 +101,6 @@
                         <td>{{ $row->email }}</td>
                         <td>{{ strtoupper($row->status) }}</td>
                         <td>{{ $row->created_at?->format('d/m/Y') }}</td>
-                        <td>{{ $row->total_poin_denda }} Poin</td>
                     </tr>
                 @endforeach
             </tbody>

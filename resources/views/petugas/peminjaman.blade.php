@@ -57,7 +57,7 @@
                     <tr>
                         <td class="px-4 py-4">
                             <p class="font-semibold text-charcoal">{{ $pinjam->user->nama_lengkap }}</p>
-                            <p class="text-xs text-sage">{{ '@' . $pinjam->user->username }} · Denda: {{ $pinjam->user->total_poin_denda }} poin</p>
+                            <p class="text-xs text-sage">{{ '@' . $pinjam->user->username }}</p>
                         </td>
                         <td class="px-4 py-4">
                             <p class="font-semibold text-charcoal">{{ $pinjam->buku->judul }}</p>

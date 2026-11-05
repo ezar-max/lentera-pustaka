@@ -7,9 +7,6 @@
                     <p class="text-xs font-semibold uppercase tracking-wider text-sage">Katalog Anggota</p>
                     <h1 class="mt-1 font-sans text-2xl sm:text-3xl font-semibold text-forest">Cari & Ajukan Peminjaman Buku</h1>
                 </div>
-                <div class="text-xs text-sage">
-                    Poin Denda Aktif Anda: <strong class="{{ auth()->user()->isBlockedByDenda() ? 'text-status-ditolak-text' : 'text-forest' }}">{{ auth()->user()->total_poin_denda }} Poin</strong>
-                </div>
             </div>
 
             <form action="{{ route('member.katalog') }}" method="GET" class="mt-6 grid grid-cols-1 sm:grid-cols-12 gap-3">

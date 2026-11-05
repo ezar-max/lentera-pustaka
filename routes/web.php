@@ -7,7 +7,6 @@ use App\Http\Controllers\Admin\PenggunaController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Member\ChatController as MemberChatController;
 use App\Http\Controllers\Member\DashboardController as MemberDashboardController;
-use App\Http\Controllers\Member\DendaController as MemberDendaController;
 use App\Http\Controllers\Member\KatalogController as MemberKatalogController;
 use App\Http\Controllers\Member\KoleksiController as MemberKoleksiController;
 use App\Http\Controllers\Member\PeminjamanController as MemberPeminjamanController;
@@ -15,7 +14,6 @@ use App\Http\Controllers\Member\ProfilController as MemberProfilController;
 use App\Http\Controllers\Petugas\BukuController as PetugasBukuController;
 use App\Http\Controllers\Petugas\ChatInboxController as PetugasChatInboxController;
 use App\Http\Controllers\Petugas\DashboardController as PetugasDashboardController;
-use App\Http\Controllers\Petugas\DendaController as PetugasDendaController;
 use App\Http\Controllers\Petugas\KategoriController as PetugasKategoriController;
 use App\Http\Controllers\Petugas\LaporanController as PetugasLaporanController;
 use App\Http\Controllers\Petugas\StatistikController as PetugasStatistikController;
@@ -65,8 +63,8 @@ Route::prefix('member')
         Route::post('/koleksi/{buku}/toggle', [MemberKoleksiController::class, 'toggle'])->name('koleksi.toggle');
         Route::delete('/koleksi/{koleksi}', [MemberKoleksiController::class, 'destroy'])->name('koleksi.destroy');
 
-        // Poin Denda
-        Route::get('/denda', [MemberDendaController::class, 'index'])->name('denda.index');
+        // Poin Denda (Dialihkan karena sistem denda telah ditiadakan)
+        Route::get('/denda', fn () => redirect()->route('member.dashboard'))->name('denda.index');
 
         // Chat AI & Petugas
         Route::get('/chat', [MemberChatController::class, 'index'])->name('chat');
@@ -105,10 +103,8 @@ $registerPetugasRoutes = function (): void {
     Route::post('/pengembalian/{peminjaman}/setujui', [VerifikasiPengembalianController::class, 'setujui'])->name('pengembalian.setujui');
     Route::post('/pengembalian/{peminjaman}/konfirmasi', [VerifikasiPengembalianController::class, 'konfirmasi'])->name('pengembalian.konfirmasi');
 
-    // Data Denda
-    Route::get('/denda', [PetugasDendaController::class, 'index'])->name('denda.index');
-    Route::post('/denda/{denda}/lunas', [PetugasDendaController::class, 'tandaiLunas'])->name('denda.lunas');
-    Route::post('/denda/user/{user}/lunasi-semua', [PetugasDendaController::class, 'lunasiUser'])->name('denda.lunasi-user');
+    // Data Denda (Dialihkan karena sistem denda telah ditiadakan)
+    Route::get('/denda', fn () => redirect()->route('petugas.dashboard'))->name('denda.index');
 
     // Laporan & Cetak PDF
     Route::get('/laporan', [PetugasLaporanController::class, 'index'])->name('laporan.index');

@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Models\Buku;
-use App\Models\Denda;
 use App\Models\KategoriBuku;
 use App\Models\Peminjaman;
 use App\Models\User;
@@ -182,24 +181,11 @@ class LenteraPustakaFlowTest extends TestCase
         // Stok tersedia kembali +1 menjadi 4
         $this->assertSame(4, $buku->fresh()->stok_tersedia);
 
-        // Cek akumulasi poin denda user: 30 + 25 = 55 poin
+        // Sistem poin dan denda telah ditiadakan: member tidak terblokir denda dan bisa meminjam lagi
         $memberFresh = $member->fresh();
-        $this->assertSame(55, $memberFresh->total_poin_denda);
-        $this->assertTrue($memberFresh->isBlockedByDenda());
+        $this->assertFalse($memberFresh->isBlockedByDenda());
 
-        // Member mencoba meminjam lagi saat poin >= 50 -> gagal terblokir
         $this->actingAs($memberFresh)
-            ->post('/member/peminjaman', ['buku_id' => $buku->id])
-            ->assertSessionHas('error');
-
-        // Petugas menandai lunas semua denda user -> total_poin_denda kembali 0 -> member bisa pinjam lagi
-        $this->actingAs($petugas)
-            ->post("/petugas/denda/user/{$member->id}/lunasi-semua")
-            ->assertSessionHas('success');
-
-        $this->assertSame(0, $member->fresh()->total_poin_denda);
-
-        $this->actingAs($member->fresh())
             ->post('/member/peminjaman', ['buku_id' => $buku->id])
             ->assertSessionHas('success');
     }
@@ -244,7 +230,7 @@ class LenteraPustakaFlowTest extends TestCase
         $this->actingAs($member)->post("/member/koleksi/{$buku->id}/toggle")->assertSessionHas('success');
         $this->actingAs($member)->get('/member/koleksi')->assertStatus(200);
         $this->actingAs($member)->get('/member/peminjaman')->assertStatus(200);
-        $this->actingAs($member)->get('/member/denda')->assertStatus(200);
+        $this->actingAs($member)->get('/member/denda')->assertRedirect();
         $this->actingAs($member)->get('/member/chat')->assertStatus(200);
         $this->actingAs($member)->post('/member/chat/ai', ['isi' => 'Apa saja aturan peminjaman?'])->assertRedirect();
         $this->actingAs($member)->post('/member/chat/hubungi-petugas')->assertRedirect();
@@ -260,7 +246,7 @@ class LenteraPustakaFlowTest extends TestCase
         $this->actingAs($petugas)->get('/petugas/kategori')->assertStatus(200);
         $this->actingAs($petugas)->get('/petugas/peminjaman')->assertStatus(200);
         $this->actingAs($petugas)->get('/petugas/pengembalian')->assertStatus(200);
-        $this->actingAs($petugas)->get('/petugas/denda')->assertStatus(200);
+        $this->actingAs($petugas)->get('/petugas/denda')->assertRedirect();
         $this->actingAs($petugas)->get('/petugas/laporan')->assertStatus(200);
         $this->actingAs($petugas)->get('/petugas/laporan/pdf?jenis=stok')->assertStatus(200);
         $this->actingAs($petugas)->get('/petugas/statistik')->assertStatus(200);
@@ -276,7 +262,7 @@ class LenteraPustakaFlowTest extends TestCase
         $this->actingAs($admin)->get('/admin/statistik')->assertStatus(200);
     }
 
-    public function test_pengembalian_buku_hilang_mengurangi_stok_total_dan_menambah_100_poin_denda(): void
+    public function test_pengembalian_buku_hilang_mengurangi_stok_total_tanpa_poin_denda(): void
     {
         $petugas = User::factory()->petugas()->create();
         $member = User::factory()->create();
@@ -298,9 +284,9 @@ class LenteraPustakaFlowTest extends TestCase
             'catatan_petugas' => 'Buku hilang oleh peminjam.',
         ]);
 
-        // Setelah hilang: stok_total berkurang menjadi 4, stok_tersedia tetap 4 (berkurang 1 dari awal 5), dan denda 100 poin
+        // Setelah hilang: stok_total berkurang menjadi 4, stok_tersedia tetap 4, dan tidak ada denda poin
         $this->assertSame(4, $buku->fresh()->stok_total);
         $this->assertSame(4, $buku->fresh()->stok_tersedia);
-        $this->assertSame(100, $member->fresh()->total_poin_denda);
+        $this->assertSame(0, $member->fresh()->total_poin_denda);
     }
 }

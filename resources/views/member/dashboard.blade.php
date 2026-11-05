@@ -18,29 +18,6 @@
             </div>
         </div>
 
-        {{-- Peringatan Denda jika Mendekati / Melewati Batas --}}
-        @if ($user->total_poin_denda >= $aturan['batas_poin_blokir'])
-            <div class="mt-6 p-4 rounded-card bg-status-ditolak border border-status-ditolak-text/25 text-status-ditolak-text text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                    <strong class="font-semibold block">Batas Poin Denda Tercapai ({{ $user->total_poin_denda }} / {{ $aturan['batas_poin_blokir'] }} Poin)</strong>
-                    <span>Pengajuan peminjaman baru dinonaktifkan sementara hingga poin denda aktif Anda diselesaikan bersama petugas perpustakaan.</span>
-                </div>
-                <x-button href="{{ route('member.denda.index') }}" variant="danger" size="sm">
-                    Lihat Rincian Denda
-                </x-button>
-            </div>
-        @elseif ($user->total_poin_denda >= $aturan['batas_poin_peringatan'])
-            <div class="mt-6 p-4 rounded-card bg-status-diajukan border border-status-diajukan-text/25 text-status-diajukan-text text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                <div>
-                    <strong class="font-semibold block">Peringatan Dini Poin Denda ({{ $user->total_poin_denda }} Poin)</strong>
-                    <span>Poin denda aktif Anda mendekati batas blokir {{ $aturan['batas_poin_blokir'] }} poin. Segera kembalikan buku tepat waktu atau hubungi petugas.</span>
-                </div>
-                <x-button href="{{ route('member.denda.index') }}" variant="secondary" size="sm">
-                    Cek Poin Denda
-                </x-button>
-            </div>
-        @endif
-
         {{-- Kartu Ringkasan --}}
         <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-5">
             <x-stat-card
@@ -54,10 +31,9 @@
                 subtitle="Segera ambil buku maksimal {{ $aturan['batas_ambil_hari'] }} hari setelah disetujui"
             />
             <x-stat-card
-                label="Total Poin Denda Aktif"
-                :value="$user->total_poin_denda . ' Poin'"
-                subtitle="Batas blokir pengajuan baru: {{ $aturan['batas_poin_blokir'] }} poin"
-                :accent="$user->total_poin_denda >= $aturan['batas_poin_blokir']"
+                label="Buku Selesai Dipinjam"
+                :value="$riwayatSelesaiCount . ' Buku'"
+                subtitle="Total koleksi yang telah berhasil Anda baca"
             />
         </div>
 
@@ -200,8 +176,8 @@
                 </div>
             </div>
 
-            {{-- Parameter Ketentuan Kuota & Denda --}}
-            <div class="mt-6 pt-5 border-t border-sage/20 grid grid-cols-2 sm:grid-cols-5 gap-4 text-xs">
+            {{-- Parameter Ketentuan Kuota & Waktu --}}
+            <div class="mt-6 pt-5 border-t border-sage/20 grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
                 <div>
                     <span class="text-sage block">Kuota Pinjam Aktif</span>
                     <strong class="text-charcoal text-sm">Maksimal {{ $aturan['kuota_pinjam_aktif'] }} Buku</strong>
@@ -211,16 +187,8 @@
                     <strong class="text-charcoal text-sm">{{ $aturan['durasi_pinjam_hari'] }} Hari Kalender</strong>
                 </div>
                 <div>
-                    <span class="text-sage block">Denda Keterlambatan</span>
-                    <strong class="text-charcoal text-sm">{{ $aturan['denda_terlambat'] }} Poin / Hari</strong>
-                </div>
-                <div>
-                    <span class="text-sage block">Denda Rusak / Hilang</span>
-                    <strong class="text-charcoal text-sm">{{ $aturan['denda_rusak'] }} / {{ $aturan['denda_hilang'] }} Poin</strong>
-                </div>
-                <div>
-                    <span class="text-sage block">Batas Blokir Pinjam</span>
-                    <strong class="text-status-ditolak-text text-sm">{{ $aturan['batas_poin_blokir'] }} Poin Aktif</strong>
+                    <span class="text-sage block">Batas Waktu Pengambilan</span>
+                    <strong class="text-charcoal text-sm">Maksimal {{ $aturan['batas_ambil_hari'] }} Hari</strong>
                 </div>
             </div>
         </div>

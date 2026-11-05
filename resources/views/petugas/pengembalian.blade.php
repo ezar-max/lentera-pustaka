@@ -38,8 +38,8 @@
                     @php
                         $hariTerlambatLive = $pinjam->status === 'selesai' ? $pinjam->hari_terlambat : $pinjam->hitungHariTerlambatSaatIni();
                         $labelKeterlambatan = $hariTerlambatLive > 0
-                            ? "Terlambat {$hariTerlambatLive} hari (+" . ($hariTerlambatLive * config('perpustakaan.denda.terlambat_per_hari', 2)) . " poin)"
-                            : 'Tepat Waktu (0 poin)';
+                            ? "Terlambat {$hariTerlambatLive} hari"
+                            : 'Tepat Waktu';
                     @endphp
                     <tr>
                         <td class="px-4 py-4">

@@ -164,8 +164,8 @@
                 </ol>
             </div>
 
-            {{-- Rincian Hasil Konfirmasi & Denda (Jika Ada) --}}
-            @if ($peminjaman->status === 'selesai' || $peminjaman->denda->isNotEmpty())
+            {{-- Rincian Hasil Konfirmasi --}}
+            @if ($peminjaman->status === 'selesai')
                 <div class="mt-8 pt-6 border-t border-sage/20">
                     <h3 class="text-xs font-semibold uppercase tracking-wider text-sage mb-3">Hasil Pemeriksaan Pengembalian</h3>
                     <div class="flex flex-wrap items-center gap-3 text-xs">

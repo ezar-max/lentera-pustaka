@@ -27,7 +27,7 @@ class VerifikasiPengembalianController extends Controller
             default => ['pengajuan_kembali'],
         };
 
-        $peminjamanList = Peminjaman::with(['user', 'buku', 'petugas', 'denda'])
+        $peminjamanList = Peminjaman::with(['user', 'buku', 'petugas'])
             ->whereIn('status', $statusQuery)
             ->latest('updated_at')
             ->paginate(12)
@@ -66,7 +66,7 @@ class VerifikasiPengembalianController extends Controller
             );
 
             $infoTambahan = $hasil->hari_terlambat > 0
-                ? " Terlambat {$hasil->hari_terlambat} hari dan poin denda otomatis dicatat."
+                ? " Terlambat {$hasil->hari_terlambat} hari."
                 : ' Tepat waktu.';
 
             return back()->with('success', 'Pengembalian buku berhasil dikonfirmasi dan stok telah diperbarui.'.$infoTambahan);

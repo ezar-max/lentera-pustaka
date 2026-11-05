@@ -47,12 +47,6 @@
                         'badge' => $antreanKembali,
                     ],
                     [
-                        'label' => 'Data Poin Denda',
-                        'route' => $prefix . '.denda.index',
-                        'active' => request()->routeIs($prefix . '.denda*'),
-                        'badge' => 0,
-                    ],
-                    [
                         'label' => 'Laporan & PDF',
                         'route' => $prefix . '.laporan.index',
                         'active' => request()->routeIs($prefix . '.laporan*'),
@@ -171,12 +165,6 @@
                         'route' => 'member.koleksi.index',
                         'active' => request()->routeIs('member.koleksi*'),
                         'badge' => 0,
-                    ],
-                    [
-                        'label' => 'Poin Denda',
-                        'route' => 'member.denda.index',
-                        'active' => request()->routeIs('member.denda*'),
-                        'badge' => $user->total_poin_denda,
                     ],
                     [
                         'label' => 'Bantuan & Chat',

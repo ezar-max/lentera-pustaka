@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Buku;
-use App\Models\Denda;
 use App\Models\Peminjaman;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,7 +19,6 @@ class LaporanService
     {
         return match ($jenis) {
             'stok' => $this->laporanStokBuku($filters),
-            'denda' => $this->laporanDenda($filters),
             'member' => $this->laporanMember($filters),
             default => $this->laporanPeminjaman($filters),
         };
@@ -69,29 +67,6 @@ class LaporanService
         if (! empty($filters['stok_menipis'])) {
             $batas = (int) config('perpustakaan.batas_stok_menipis', 2);
             $query->where('stok_tersedia', '<=', $batas);
-        }
-
-        return $query->get();
-    }
-
-    /**
-     * @param  array<string, mixed>  $filters
-     * @return Collection<int, Denda>
-     */
-    public function laporanDenda(array $filters = []): Collection
-    {
-        $query = Denda::with(['user', 'peminjaman.buku'])->latest();
-
-        if (! empty($filters['tanggal_mulai'])) {
-            $query->whereDate('created_at', '>=', $filters['tanggal_mulai']);
-        }
-
-        if (! empty($filters['tanggal_selesai'])) {
-            $query->whereDate('created_at', '<=', $filters['tanggal_selesai']);
-        }
-
-        if (! empty($filters['status_denda'])) {
-            $query->where('status', $filters['status_denda']);
         }
 
         return $query->get();

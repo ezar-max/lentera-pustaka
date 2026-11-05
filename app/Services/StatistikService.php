@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Buku;
-use App\Models\Denda;
 use App\Models\KategoriBuku;
 use App\Models\Peminjaman;
 use App\Models\User;
@@ -24,7 +23,7 @@ class StatistikService
             'buku_terpopuler' => $this->sepuluhBukuTerpopuler(),
             'kategori_terbanyak' => $this->kategoriTerbanyakDipinjam(),
             'komposisi_status' => $this->komposisiStatusPeminjaman(),
-            'denda_per_bulan' => $this->poinDendaPerBulan(),
+            'pengembalian_per_bulan' => $this->pengembalianPerBulan(),
             'member_baru_per_bulan' => $this->memberBaruPerBulan(),
         ];
     }
@@ -129,11 +128,11 @@ class StatistikService
     }
 
     /**
-     * 5. Grafik Total Poin Denda per Bulan (Batang)
+     * 5. Grafik Buku Dikembalikan per Bulan (Batang)
      *
      * @return array{labels: list<string>, data: list<int>}
      */
-    public function poinDendaPerBulan(): array
+    public function pengembalianPerBulan(): array
     {
         $labels = [];
         $data = [];
@@ -147,11 +146,12 @@ class StatistikService
             $bulan = Carbon::today()->startOfMonth()->subMonths($i);
             $labels[] = $namaBulan[$bulan->month].' '.$bulan->year;
 
-            $poin = Denda::whereYear('created_at', $bulan->year)
-                ->whereMonth('created_at', $bulan->month)
-                ->sum('poin');
+            $jumlah = Peminjaman::where('status', 'selesai')
+                ->whereYear('tanggal_kembali', $bulan->year)
+                ->whereMonth('tanggal_kembali', $bulan->month)
+                ->count();
 
-            $data[] = (int) $poin;
+            $data[] = (int) $jumlah;
         }
 
         return ['labels' => $labels, 'data' => $data];

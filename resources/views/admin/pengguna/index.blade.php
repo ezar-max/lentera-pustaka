@@ -40,7 +40,6 @@
                     <th class="px-4 py-3.5">Kontak</th>
                     <th class="px-4 py-3.5">Role</th>
                     <th class="px-4 py-3.5">Status</th>
-                    <th class="px-4 py-3.5 text-center">Poin Denda</th>
                     <th class="px-4 py-3.5 text-right">Aksi Manajemen</th>
                 </tr>
             </x-slot:head>
@@ -62,9 +61,6 @@
                     </td>
                     <td class="px-4 py-4">
                         <x-badge-status :status="$u->status" />
-                    </td>
-                    <td class="px-4 py-4 text-center text-xs font-semibold">
-                        {{ $u->total_poin_denda }}
                     </td>
                     <td class="px-4 py-4 text-right whitespace-nowrap">
                         <div class="inline-flex items-center gap-1.5">

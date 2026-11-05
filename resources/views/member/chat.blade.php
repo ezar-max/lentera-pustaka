@@ -105,7 +105,7 @@
                     type="text"
                     name="isi"
                     required
-                    placeholder="Tanyakan rekomendasi buku, stok tersedia, atau aturan denda..."
+                    placeholder="Tanyakan rekomendasi buku, stok tersedia, atau aturan sirkulasi..."
                     class="flex-1 rounded-card border border-sage/35 bg-ivory-paper px-4 py-2.5 text-sm text-charcoal focus:border-forest focus:outline-none"
                 >
                 <x-button type="submit" variant="primary">
@@ -120,7 +120,7 @@
                 <div class="p-12 text-center">
                     <h2 class="font-sans text-xl font-semibold text-forest">Mulai Percakapan dengan Petugas</h2>
                     <p class="mt-2 text-sm text-sage max-w-md mx-auto">
-                        Butuh bantuan langsung mengenai verifikasi peminjaman, kondisi buku, atau penyelesaian poin denda? Hubungi petugas kami.
+                        Butuh bantuan langsung mengenai verifikasi peminjaman, pengambilan, atau pengembalian buku? Hubungi petugas kami.
                     </p>
                     <form action="{{ route('member.chat.hubungi-petugas') }}" method="POST" class="mt-6">
                         @csrf

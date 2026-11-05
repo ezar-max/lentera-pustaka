@@ -21,6 +21,10 @@ class DashboardController extends Controller
             ->whereIn('status', ['diajukan', 'disetujui'])
             ->count();
 
+        $riwayatSelesaiCount = Peminjaman::where('user_id', $user->id)
+            ->where('status', 'selesai')
+            ->count();
+
         $daftarPinjamanAktif = Peminjaman::with('buku')
             ->where('user_id', $user->id)
             ->aktif()
@@ -38,17 +42,13 @@ class DashboardController extends Controller
             'kuota_pinjam_aktif' => config('perpustakaan.kuota_pinjam_aktif', 3),
             'durasi_pinjam_hari' => config('perpustakaan.durasi_pinjam_hari', 7),
             'batas_ambil_hari' => config('perpustakaan.batas_ambil_hari', 2),
-            'denda_terlambat' => config('perpustakaan.denda.terlambat_per_hari', 2),
-            'denda_rusak' => config('perpustakaan.denda.rusak', 25),
-            'denda_hilang' => config('perpustakaan.denda.hilang', 100),
-            'batas_poin_blokir' => config('perpustakaan.batas_poin_blokir', 50),
-            'batas_poin_peringatan' => config('perpustakaan.batas_poin_peringatan', 30),
         ];
 
         return view('member.dashboard', compact(
             'user',
             'pinjamanAktifCount',
             'menungguPersetujuanCount',
+            'riwayatSelesaiCount',
             'daftarPinjamanAktif',
             'notifikasiTerbaru',
             'aturan'

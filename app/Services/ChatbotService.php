@@ -54,10 +54,6 @@ class ChatbotService
         $kuota = config('perpustakaan.kuota_pinjam_aktif', 3);
         $durasi = config('perpustakaan.durasi_pinjam_hari', 7);
         $batasAmbil = config('perpustakaan.batas_ambil_hari', 2);
-        $dendaTerlambat = config('perpustakaan.denda.terlambat_per_hari', 2);
-        $dendaRusak = config('perpustakaan.denda.rusak', 25);
-        $dendaHilang = config('perpustakaan.denda.hilang', 100);
-        $batasBlokir = config('perpustakaan.batas_poin_blokir', 50);
 
         $daftarBuku = Buku::with('kategori')
             ->orderBy('judul')
@@ -90,21 +86,19 @@ Kamu adalah Asisten Pustakawan Digital "Lentera Pustaka".
 Jawablah selalu dalam Bahasa Indonesia yang sopan, tenang, ringkas, dan jelas. Tanpa emoji berlebihan.
 
 BATASAN PENTING:
-1. Kamu HANYA boleh menjawab pertanyaan seputar perpustakaan Lentera Pustaka, katalog buku, ketersediaan stok, rekomendasi bacaan dari katalog, aturan peminjaman/pengembalian, dan status pinjaman/denda anggota.
+1. Kamu HANYA boleh menjawab pertanyaan seputar perpustakaan Lentera Pustaka, katalog buku, ketersediaan stok, rekomendasi bacaan dari katalog, aturan peminjaman/pengembalian, dan status peminjaman anggota.
 2. Jika pengguna bertanya di luar topik perpustakaan atau literasi buku, tolak dengan sopan dan arahkan kembali ke layanan Lentera Pustaka.
-3. Kamu TIDAK BISA dan TIDAK BOLEH menyetujui peminjaman, mengubah stok, menghapus denda, atau mengubah data sistem secara langsung. Jika pengguna membutuhkan tindakan petugas manusia, sarankan menekan tombol "Hubungi Petugas".
+3. Kamu TIDAK BISA dan TIDAK BOLEH menyetujui peminjaman, mengubah stok, atau mengubah data sistem secara langsung. Jika pengguna membutuhkan tindakan petugas manusia, sarankan menekan tombol "Hubungi Petugas".
 
 ATURAN RESMI LENTERA PUSTAKA:
 - Kuota maksimal pinjaman aktif: {$kuota} buku per member.
 - Durasi peminjaman: {$durasi} hari sejak buku diserahkan petugas.
 - Batas pengambilan buku setelah disetujui: {$batasAmbil} hari (lewat dari itu batal otomatis).
 - Satu judul buku yang sama tidak boleh dipinjam ganda dalam waktu bersamaan.
-- Denda berbasis poin: Terlambat {$dendaTerlambat} poin/hari, Rusak {$dendaRusak} poin, Hilang {$dendaHilang} poin.
-- Batas blokir pinjaman baru: {$batasBlokir} poin denda aktif.
+- Perpustakaan tidak menerapkan sistem denda / poin denda.
 
 PROFIL ANGGOTA SAAT INI:
 - Nama: {$user->nama_lengkap}
-- Total Poin Denda Aktif: {$user->total_poin_denda} poin
 - Daftar Pinjaman Aktif:
 {$pinjamanAktif}
 
@@ -181,11 +175,11 @@ PROMPT;
             $durasi = config('perpustakaan.durasi_pinjam_hari', 7);
             $batasAmbil = config('perpustakaan.batas_ambil_hari', 2);
 
-            return "Berikut aturan peminjaman di Lentera Pustaka:\n1. Maksimal peminjaman aktif adalah {$kuota} buku.\n2. Durasi peminjaman adalah {$durasi} hari sejak buku diserahkan petugas.\n3. Buku yang telah disetujui wajib diambil maksimal dalam {$batasAmbil} hari.\n4. Poin denda aktif maksimal sebelum peminjaman diblokir adalah ".config('perpustakaan.batas_poin_blokir', 50).' poin.';
+            return "Berikut aturan peminjaman di Lentera Pustaka:\n1. Maksimal peminjaman aktif adalah {$kuota} buku.\n2. Durasi peminjaman adalah {$durasi} hari sejak buku diserahkan petugas.\n3. Buku yang telah disetujui wajib diambil maksimal dalam {$batasAmbil} hari.\n4. Lentera Pustaka tidak menerapkan sistem denda.";
         }
 
-        if (str_contains($q, 'denda') || str_contains($q, 'poin') || str_contains($q, 'terlambat') || str_contains($q, 'rusak') || str_contains($q, 'hilang')) {
-            return "Saat ini Anda memiliki {$user->total_poin_denda} poin denda aktif. Ketentuan denda di Lentera Pustaka adalah: Terlambat ".config('perpustakaan.denda.terlambat_per_hari', 2).' poin/hari, Buku Rusak '.config('perpustakaan.denda.rusak', 25).' poin, dan Buku Hilang '.config('perpustakaan.denda.hilang', 100).' poin. Jika mencapai '.config('perpustakaan.batas_poin_blokir', 50).' poin, pengajuan pinjaman baru akan dinonaktifkan sementara hingga denda diselesaikan di petugas.';
+        if (str_contains($q, 'denda') || str_contains($q, 'poin')) {
+            return 'Lentera Pustaka tidak menerapkan sistem denda atau poin denda. Namun, pastikan buku dikembalikan tepat waktu dan dalam kondisi baik demi kenyamanan seluruh anggota.';
         }
 
         if (str_contains($q, 'pinjaman saya') || str_contains($q, 'status pinjam') || str_contains($q, 'sedang saya pinjam')) {
@@ -221,6 +215,6 @@ PROMPT;
         $tersedia = Buku::where('stok_tersedia', '>', 0)->inRandomOrder()->limit(4)->get();
         $rekomendasi = $tersedia->map(fn ($b) => "- {$b->judul} ({$b->penulis}) — Tersedia {$b->stok_tersedia} eks")->join("\n");
 
-        return "Terima kasih telah menghubungi Asisten AI Lentera Pustaka. Saya dapat membantu memberikan informasi mengenai katalog buku, stok tersedia, aturan peminjaman, maupun status poin denda Anda.\n\nBeberapa koleksi yang tersedia hari ini antara lain:\n{$rekomendasi}\n\nApabila Anda memerlukan bantuan verifikasi langsung dari staf, silakan gunakan tombol Hubungi Petugas.";
+        return "Terima kasih telah menghubungi Asisten AI Lentera Pustaka. Saya dapat membantu memberikan informasi mengenai katalog buku, ketersediaan stok, aturan peminjaman, maupun rekomendasi bacaan.\n\nBeberapa koleksi yang tersedia hari ini antara lain:\n{$rekomendasi}\n\nApabila Anda memerlukan bantuan verifikasi langsung dari staf, silakan gunakan tombol Hubungi Petugas.";
     }
 }

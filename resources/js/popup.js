@@ -189,9 +189,9 @@ export const LenteraPopup = {
                     <div>
                         <label class="block text-xs font-semibold text-charcoal mb-1.5">Kondisi Fisik Buku Saat Diterima <span class="text-status-ditolak-text">*</span></label>
                         <select id="swal-kondisi-buku" class="w-full rounded-card border border-sage/40 bg-white px-3.5 py-2.5 text-sm text-charcoal focus:border-forest focus:outline-none">
-                            <option value="baik">Baik (Stok tersedia +1, tanpa denda kondisi)</option>
-                            <option value="rusak">Rusak (Stok tersedia +1, denda rusak +25 poin)</option>
-                            <option value="hilang">Hilang (Stok total & tersedia berkurang, denda +100 poin)</option>
+                            <option value="baik">Baik (Stok tersedia +1)</option>
+                            <option value="rusak">Rusak (Stok tersedia +1, perlu perawatan)</option>
+                            <option value="hilang">Hilang (Stok total & tersedia berkurang)</option>
                         </select>
                     </div>
                     <div>

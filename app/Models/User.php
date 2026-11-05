@@ -58,16 +58,6 @@ class User extends Authenticatable
         return $this->hasMany(Peminjaman::class, 'petugas_id');
     }
 
-    public function denda(): HasMany
-    {
-        return $this->hasMany(Denda::class, 'user_id');
-    }
-
-    public function dendaAktif(): HasMany
-    {
-        return $this->hasMany(Denda::class, 'user_id')->where('status', 'aktif');
-    }
-
     public function ulasanBuku(): HasMany
     {
         return $this->hasMany(UlasanBuku::class, 'user_id');
@@ -110,6 +100,6 @@ class User extends Authenticatable
 
     public function isBlockedByDenda(): bool
     {
-        return $this->total_poin_denda >= (int) config('perpustakaan.batas_poin_blokir', 50);
+        return false;
     }
 }
